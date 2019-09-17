@@ -22,12 +22,15 @@ func init() {
 }
 
 func main() {
-	callCount := 0
-	err := retry.With(func(attempts int) error {
-		fmt.Printf("Attempt: %d\n", attempts)
-		callCount++
-		return nil
-	}, 5)
+	attempts := uint(0)
+	err := retry.With(
+		func() error {
+			attempts++
+			return errors.New("error while attempting.")
+		},
+		retry.Delay(time.Nanosecond),
+		retry.DelayStrategy(retry.Fixed),
+	)
 }
 ```
 
